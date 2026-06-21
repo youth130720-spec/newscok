@@ -1,0 +1,129 @@
+/* 뉴스콕 - 진짜 뉴스 사이트 같은 화려한 매거진형 디자인 */
+:root{
+  --bg:#f4f6fa; --card:#fff; --primary:#2f6fed; --primary-dark:#1e54c4;
+  --accent:#ff5a3c; --text:#16202c; --muted:#6b7585; --line:#e6eaf0;
+  --shadow:0 6px 20px rgba(20,40,80,.08); --shadow-sm:0 2px 10px rgba(20,40,80,.06); --radius:16px;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  background:var(--bg);color:var(--text);font-size:18px;line-height:1.55;}
+.wrap{max-width:960px;margin:0 auto;padding:0 16px;}
+.hidden{display:none !important;}
+
+.site-header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;box-shadow:var(--shadow-sm);}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;}
+.logo{font-size:24px;font-weight:900;color:var(--primary);text-decoration:none;letter-spacing:-.5px;}
+.save-btn{background:var(--accent);color:#fff;border:none;border-radius:999px;padding:9px 16px;font-size:15px;font-weight:800;cursor:pointer;}
+.save-btn:hover{filter:brightness(.95);}
+
+.hero{text-align:center;padding:22px 0 8px;}
+.title{font-size:25px;margin:4px 0;letter-spacing:-.5px;}
+.subtitle{color:var(--muted);margin:0 0 16px;font-size:15px;}
+.search-bar{display:flex;gap:8px;max-width:540px;margin:0 auto;}
+.search-bar input{flex:1;padding:13px 18px;font-size:16px;border:2px solid var(--line);border-radius:999px;outline:none;background:#fff;}
+.search-bar input:focus{border-color:var(--primary);}
+.search-bar button{background:var(--primary);color:#fff;border:none;border-radius:999px;padding:0 22px;font-size:16px;font-weight:800;cursor:pointer;}
+
+.cat-tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 2px;position:sticky;top:57px;background:var(--bg);z-index:20;}
+.cat-tab{flex:0 0 auto;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:15px;font-weight:800;cursor:pointer;color:var(--text);box-shadow:var(--shadow-sm);}
+.cat-tab:hover{border-color:var(--primary);}
+.cat-tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.list-head{display:flex;align-items:center;justify-content:space-between;margin:16px 0 12px;}
+.list-head h2{font-size:21px;margin:0;}
+.ghost-btn{background:transparent;border:2px solid var(--line);border-radius:999px;padding:7px 14px;font-size:15px;cursor:pointer;color:var(--text);}
+.ghost-btn:hover{border-color:var(--primary);}
+
+/* 톱기사 (featured) */
+.featured{position:relative;border-radius:20px;overflow:hidden;margin-bottom:18px;box-shadow:var(--shadow);
+  background:linear-gradient(135deg,var(--c,#2f6fed),#0b1f44);min-height:200px;display:flex;align-items:flex-end;cursor:pointer;}
+.featured .fbig{position:absolute;top:-10px;right:6px;font-size:130px;opacity:.18;line-height:1;}
+.featured .fbadge{position:absolute;top:16px;left:18px;background:rgba(255,255,255,.22);color:#fff;font-weight:800;font-size:13px;padding:5px 13px;border-radius:999px;backdrop-filter:blur(4px);}
+.featured .fcontent{position:relative;padding:54px 22px 20px;color:#fff;width:100%;background:linear-gradient(transparent,rgba(0,0,0,.35));}
+.featured h3{font-size:24px;margin:0 0 8px;line-height:1.35;font-weight:800;}
+.featured .fmeta{display:flex;align-items:center;gap:8px;font-size:14px;opacity:.95;}
+.featured .fmeta img{width:20px;height:20px;border-radius:5px;background:#fff;}
+
+/* 일반 카드 */
+.news-list{display:flex;flex-direction:column;gap:12px;}
+.news-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm);
+  padding:14px;display:flex;gap:14px;align-items:stretch;transition:transform .1s,box-shadow .1s;}
+.news-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+.nthumb{flex:0 0 92px;width:92px;border-radius:12px;background:linear-gradient(135deg,var(--c,#2f6fed),#0b1f44);
+  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.nthumb span{font-size:40px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25));}
+.nthumb .rank{position:absolute;top:6px;left:8px;color:#fff;font-weight:900;font-size:15px;opacity:.9;}
+.news-body{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;}
+.news-title{font-size:17.5px;font-weight:700;line-height:1.45;margin:0 0 8px;}
+.news-title a{color:var(--text);text-decoration:none;}
+.news-title a:hover{color:var(--primary);}
+.news-meta{color:var(--muted);font-size:13.5px;display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
+.news-meta img{width:18px;height:18px;border-radius:4px;background:#f0f0f0;}
+.news-meta .src{font-weight:700;color:#3a4655;}
+.news-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;align-items:flex-end;justify-content:center;}
+.pick-btn{background:#fff;border:1.5px solid var(--accent);color:var(--accent);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;}
+.pick-btn:hover{background:#fff2ef;}
+.pick-btn.saved{background:var(--accent);color:#fff;}
+.read-link{font-size:12.5px;color:var(--muted);text-decoration:none;white-space:nowrap;}
+.read-link:hover{color:var(--primary);}
+
+.empty{text-align:center;color:var(--muted);padding:40px 0;font-size:18px;}
+.loading{text-align:center;padding:40px 0;font-size:20px;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1b2430;color:#fff;padding:13px 22px;border-radius:999px;font-size:15px;box-shadow:var(--shadow);z-index:50;max-width:90%;text-align:center;}
+.site-footer{color:var(--muted);text-align:center;padding:28px 0;font-size:13.5px;}
+
+@media (max-width:560px){
+  body{font-size:17px;} .title{font-size:21px;}
+  .featured h3{font-size:20px;} .featured .fbig{font-size:100px;}
+  .nthumb{flex-basis:74px;width:74px;} .nthumb span{font-size:32px;}
+  .news-actions{flex-direction:row;align-items:center;}
+  .search-bar{flex-direction:column;} .search-bar button{padding:13px;}
+}
+
+/* === 영상뉴스 === */
+.cat-tab.vidtab{background:#ff0000;color:#fff;border-color:#ff0000;}
+.cat-tab.vidtab.active{background:#cc0000;border-color:#cc0000;}
+.video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.vid-card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .1s,box-shadow .1s;}
+.vid-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+.vid-thumb{position:relative;cursor:pointer;aspect-ratio:16/9;background:#000;}
+.vid-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.vid-play{position:absolute;inset:0;margin:auto;width:54px;height:54px;background:rgba(0,0,0,.6);color:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:22px;padding-left:4px;transition:background .1s;}
+.vid-thumb:hover .vid-play{background:#ff0000;}
+.vid-info{padding:12px 14px;}
+.vid-title{font-size:16px;font-weight:700;line-height:1.45;margin:0 0 8px;}
+.vid-info .pick-btn{margin-top:6px;}
+
+/* 영상 재생 라이트박스 */
+.vlightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;}
+.vlb-inner{width:100%;max-width:880px;}
+.vlb-close{background:#fff;border:none;border-radius:999px;padding:8px 16px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;}
+.vlb-player{position:relative;padding-top:56.25%;border-radius:14px;overflow:hidden;background:#000;}
+.vlb-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+
+/* === 오늘 날짜 + 공유 버튼 === */
+.today-date{display:inline-block;background:#eef3ff;color:var(--primary-dark);font-weight:800;font-size:14px;padding:6px 14px;border-radius:999px;margin:0 auto 4px;}
+.share-btn{background:#fff;border:1.5px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.share-btn:hover{border-color:var(--primary);color:var(--primary);}
+
+/* === 영상뉴스 카테고리 필터 === */
+.vcat-bar{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 14px;}
+.vcat-chip{flex:0 0 auto;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 15px;font-size:14px;font-weight:700;cursor:pointer;color:var(--text);}
+.vcat-chip:hover{border-color:#ff0000;}
+.vcat-chip.active{background:#ff0000;color:#fff;border-color:#ff0000;}
+.vcat-tag{background:#ffe3e3;color:#c92a2a;border-radius:6px;padding:1px 7px;font-size:12px;font-weight:700;}
+
+/* === 모바일 콤팩트: 제목은 그대로(안 자름), 카드만 작게 === */
+@media (max-width:560px){
+  .news-card{padding:11px;gap:10px;align-items:center;}
+  .nthumb{flex:0 0 54px;width:54px;}
+  .nthumb span{font-size:24px;}
+  .news-title{font-size:15px;line-height:1.42;margin:0 0 5px;}
+  .news-meta{font-size:12px;gap:5px;}
+  .news-meta img{width:15px;height:15px;}
+  .news-actions{flex-direction:column;gap:5px;}
+  .pick-btn,.share-btn{padding:5px 9px;font-size:11.5px;}
+  .read-link{display:none;}
+  .video-grid{grid-template-columns:1fr;}
+}

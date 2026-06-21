@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>뉴스콕 · 오늘의 뉴스를 콕 집어서</title>
+  <meta name="description" content="여러 카테고리의 오늘의 뉴스·인기 뉴스를 한눈에. 마음에 드는 뉴스는 영상 제작 후보로 콕 담아두세요." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="#" class="logo" id="homeLink">🗞️ 뉴스콕</a>
+      <button class="save-btn" id="savedBtn">⭐ 제작 후보 <span id="savedCount"></span></button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <p id="todayDate" class="today-date"></p>
+      <h1 class="title">오늘 뭐 볼까? 콕 집어드려요 👀</h1>
+      <p class="subtitle">여러 분야 뉴스를 한눈에! 영상으로 만들고 싶은 뉴스는 ⭐로 담아두세요.</p>
+      <div class="search-bar">
+        <input id="searchInput" type="text" placeholder="🔍 궁금한 키워드로 뉴스 검색 (예: 금리, 올림픽)" />
+        <button id="searchBtn">검색</button>
+      </div>
+    </section>
+
+    <nav id="catTabs" class="cat-tabs"></nav>
+
+    <section class="list-head">
+      <h2 id="listTitle">📰 주요뉴스</h2>
+      <button class="ghost-btn hidden" id="backBtn">← 처음으로</button>
+    </section>
+
+    <div id="newsList" class="news-list"></div>
+    <p id="emptyMsg" class="empty hidden"></p>
+    <div id="loading" class="loading hidden">📡 뉴스를 콕콕 모으는 중...</div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap"><p>🗞️ 뉴스콕 · 뉴스 출처: 구글 뉴스(각 언론사) · 제목을 누르면 원문으로 이동해요</p></div>
+  </footer>
+
+  <div id="toast" class="toast hidden"></div>
+  <div id="vlightbox" class="vlightbox hidden"><div class="vlb-inner"><button id="vlbClose" class="vlb-close">✕ 닫기</button><div id="vlbPlayer" class="vlb-player"></div></div></div>
+  <script src="app.js"></script>
+</body>
+</html>

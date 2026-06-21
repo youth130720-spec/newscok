@@ -1,0 +1,14 @@
+{
+  "name": "newscok",
+  "version": "1.0.0",
+  "description": "뉴스콕 - 여러 카테고리 뉴스를 한눈에 모아보고, 영상 제작 후보로 콕 담아두는 사이트",
+  "type": "module",
+  "main": "server.js",
+  "scripts": { "start": "node server.js", "dev": "node --watch server.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@libsql/client": "^0.14.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
