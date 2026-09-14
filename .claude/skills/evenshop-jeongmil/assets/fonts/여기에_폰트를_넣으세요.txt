@@ -1,0 +1,19 @@
+※ 2026-09-14: 세 파일 모두 이 폴더에 들어 있습니다 (둘 다 SIL OFL 1.1 — LICENSE-*.txt 참고).
+   아래는 원래 안내문입니다. 파일이 없어졌을 때만 다시 받으면 됩니다.
+
+이 폴더에 아래 세 파일을 넣으면 바로 잡힙니다.
+(윈도우에 폰트를 그냥 설치해도 됩니다 — 그때는 이 폴더가 비어 있어도 됩니다.)
+
+  Paperlogy-9Black.ttf        자막 · 인트로 카드 큰 글자
+  Paperlogy-8ExtraBold.ttf    게시글 제목 · 인트로 박스
+  Pretendard-ExtraBold.otf    로고 · 지표 줄
+
+받는 곳
+-------
+  Paperlogy    https://noonnu.cc/font_page/1622
+  Pretendard   https://github.com/orioncactus/pretendard/releases
+
+셋 다 무료이고 상업적 이용이 됩니다.
+다만 재배포 조건이 폰트마다 다르므로 이 프리셋에는 넣지 않았습니다.
+
+파일 이름이 정확해야 합니다 — 위 이름 그대로 두세요.

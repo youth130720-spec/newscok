@@ -1,0 +1,20 @@
+# 작업 폴더 — 소스 영상·중간 산출물·완성본
+work/
+out/
+*.mp4
+*.wav
+*.mp3
+
+# 캐시 (구운 나레이션). 남겨두면 재렌더가 공짜지만 저장소에는 올리지 않는다
+cache/
+__pycache__/
+*.pyc
+
+# 폰트 — Paperlogy·Pretendard 모두 SIL OFL 1.1 이라 저장소에 함께 둔다 (assets/fonts/LICENSE-*.txt)
+
+# 효과음 — 볼케이노 자산이다
+assets/sfx/
+
+# 키
+*.key
+keys/

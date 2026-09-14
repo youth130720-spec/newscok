@@ -1,0 +1,9 @@
+Paperlogy (페이퍼로지)
+Copyright (c) 2024 PT&
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is available with a FAQ at: https://scripts.sil.org/OFL
+(라이선스 정보는 폰트 파일의 name 테이블 ID 13/14 에 그대로 들어 있다.)
+
+Source: https://github.com/fonts-archive/Paperlogy
+Official: https://freesentation.blog/paperlogyfont
