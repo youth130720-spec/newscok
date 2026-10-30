@@ -24,11 +24,13 @@ function epNum(title){
   const m=title.match(/(\d{1,3})\s*(?:회|화)/)||title.match(/ep\.?\s*(\d{1,3})/i);
   return m?Number(m[1]):null;
 }
+// 회차 영상 찾기: 첫 번째 영상 + 예비 영상들(퍼가기 막힘 대비)
 export async function getEpisode(n){
   if(cache.has(n)) return cache.get(n);
   if(missAt.has(n) && Date.now()-missAt.get(n)<TTL_MISS) return null;
   const list=await searchYoutube(`${SHOW.title} ${n}회`);
-  const hit=list.find((v)=>v.title.includes("순풍")&&epNum(v.title)===n);
-  if(!hit){ missAt.set(n,Date.now()); return null; }
-  cache.set(n,hit); return hit;
+  const hits=list.filter((v)=>v.title.includes("순풍")&&epNum(v.title)===n);
+  if(!hits.length){ missAt.set(n,Date.now()); return null; }
+  const ep={ ...hits[0], alts:hits.slice(1,4).map((v)=>v.videoId) };
+  cache.set(n,ep); return ep;
 }

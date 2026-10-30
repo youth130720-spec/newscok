@@ -100,7 +100,7 @@ body{margin:0;font-family:"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",
 .vlb-inner{width:100%;max-width:880px;}
 .vlb-close{background:#fff;border:none;border-radius:999px;padding:8px 16px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;}
 .vlb-player{position:relative;padding-top:56.25%;border-radius:14px;overflow:hidden;background:#000;}
-.vlb-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+.vlb-player iframe,.vlb-player #cwinYtp{position:absolute;inset:0;width:100%;height:100%;border:0;}
 
 /* === 오늘 날짜 + 공유 버튼 === */
 .today-date{display:inline-block;background:#eef3ff;color:var(--primary-dark);font-weight:800;font-size:14px;padding:6px 14px;border-radius:999px;margin:0 auto 4px;}
@@ -136,6 +136,9 @@ body{margin:0;font-family:"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",
 .ep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;}
 .ep-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 6px;cursor:pointer;box-shadow:var(--shadow-sm);color:var(--text);display:flex;align-items:baseline;justify-content:center;gap:2px;}
 .ep-card:hover{border-color:#5c3d2e;}
+.ep-card{position:relative;}
+.ep-card.seen{background:#f8f1ea;color:#8c6a57;}
+.ep-card.seen::after{content:"✔";position:absolute;top:3px;right:6px;font-size:11px;color:#2b8a3e;}
 .ep-card.last{background:#5c3d2e;color:#fff;border-color:#5c3d2e;}
 .ep-no{font-size:20px;font-weight:800;}
 .ep-lbl{font-size:13px;font-weight:700;}
@@ -148,3 +151,6 @@ body{margin:0;font-family:"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",
 .cwin-btn{background:#5c3d2e;color:#fff;border:none;border-radius:999px;padding:9px 16px;font-size:15px;font-weight:800;cursor:pointer;}
 .cwin-btn:disabled{opacity:.35;cursor:default;}
 .cwin-yt{color:#fff;font-size:14px;font-weight:700;opacity:.85;}
+.cwin-mid{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.cwin-auto{color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;cursor:pointer;}
+.classic-hero small{color:#8c6a57;}

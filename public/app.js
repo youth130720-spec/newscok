@@ -179,9 +179,13 @@ els.vlightbox.addEventListener("click",(e)=>{ if(e.target===els.vlightbox) close
 
 // ===== 명화관 (순풍산부인과, 7편부터) =====
 let SHOW={title:"순풍산부인과",start:7,total:682}, curEp=0, epShown=0;
-const EP_PAGE=24, LAST_KEY="newscok.classic.last";
-function lastEp(){ try{ return Number(localStorage.getItem(LAST_KEY))||0; }catch(e){ return 0; } }
-function setLastEp(n){ try{ localStorage.setItem(LAST_KEY,String(n)); }catch(e){} }
+const EP_PAGE=24, LAST_KEY="newscok.classic.last", SEEN_KEY="newscok.classic.seen", AUTO_KEY="newscok.classic.auto";
+function store(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v); }catch(e){ return null; } }
+function lastEp(){ return Number(store(LAST_KEY))||0; }
+function setLastEp(n){ store(LAST_KEY,String(n)); }
+const seenEps=new Set((()=>{ try{ return JSON.parse(store(SEEN_KEY)||"[]"); }catch(e){ return []; } })());
+function markSeen(n){ if(seenEps.has(n)) return; seenEps.add(n); store(SEEN_KEY,JSON.stringify([...seenEps])); const b=document.querySelector(`.ep-card[data-n="${n}"]`); if(b) b.classList.add("seen"); }
+let autoNext=store(AUTO_KEY)!=="0";
 async function loadClassic(){
   activeCat="classic";
   els.listTitle.textContent=`🎞️ 명화관 · ${SHOW.title} ${SHOW.start}편부터`;
@@ -189,45 +193,95 @@ async function loadClassic(){
   SHOW=await api("/api/classic").catch(()=>SHOW);
   const last=lastEp();
   els.newsList.innerHTML = `<div class="classic-hero">
-      <p>📼 그 시절 그 시트콤, <b>${SHOW.title}</b>을 ${SHOW.start}편부터 차례로 틀어드려요.</p>
+      <p>📼 그 시절 그 시트콤, <b>${SHOW.title}</b>을 ${SHOW.start}편부터 차례로 틀어드려요.<br/><small>✔ 표시는 본 회차예요 · 한 화가 끝나면 다음 화가 이어서 나와요</small></p>
       <button class="cwin-btn" id="classicGo">${last?`▶ ${last}화 이어보기`:`▶ ${SHOW.start}화부터 보기`}</button>
     </div><div class="ep-grid" id="epGrid"></div><button class="ghost-btn ep-more" id="epMore">더 보기 ↓</button>`;
-  $("#classicGo").addEventListener("click",()=>openEpisode(last||SHOW.start));
+  $("#classicGo").addEventListener("click",()=>openEpisode(lastEp()||SHOW.start));
   $("#epMore").addEventListener("click",renderMoreEps);
   epShown=0; renderMoreEps();
+  // 이어볼 회차가 첫 페이지 밖이면 거기까지 펼쳐두기
+  while(last && epShown<last-SHOW.start+1 && SHOW.start+epShown<=SHOW.total) renderMoreEps();
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function renderMoreEps(){
   const grid=$("#epGrid"), from=SHOW.start+epShown, to=Math.min(SHOW.total, from+EP_PAGE-1);
-  let html=""; for(let n=from;n<=to;n++) html+=`<button class="ep-card ${n===lastEp()?"last":""}" data-n="${n}"><span class="ep-no">${n}</span><span class="ep-lbl">화</span></button>`;
+  let html=""; for(let n=from;n<=to;n++) html+=`<button class="ep-card ${n===lastEp()?"last":""} ${seenEps.has(n)?"seen":""}" data-n="${n}"><span class="ep-no">${n}</span><span class="ep-lbl">화</span></button>`;
   grid.insertAdjacentHTML("beforeend",html);
   grid.querySelectorAll(".ep-card:not([data-b])").forEach((b)=>{ b.dataset.b="1"; b.addEventListener("click",()=>openEpisode(Number(b.dataset.n))); });
   epShown=to-SHOW.start+1;
   $("#epMore").classList.toggle("hidden",to>=SHOW.total);
 }
-const cw={ win:$("#cwin"), title:$("#cwinTitle"), player:$("#cwinPlayer"), prev:$("#cwinPrev"), next:$("#cwinNext"), yt:$("#cwinYt"), close:$("#cwinClose") };
+const cw={ win:$("#cwin"), title:$("#cwinTitle"), player:$("#cwinPlayer"), prev:$("#cwinPrev"), next:$("#cwinNext"), yt:$("#cwinYt"), close:$("#cwinClose"), auto:$("#cwinAuto") };
+cw.auto.checked=autoNext;
+cw.auto.addEventListener("change",()=>{ autoNext=cw.auto.checked; store(AUTO_KEY,autoNext?"1":"0"); toast(autoNext?"▶ 다음 화 자동 재생을 켰어요.":"⏸ 다음 화 자동 재생을 껐어요."); });
+
+// 유튜브 플레이어 API (영상 끝·재생 오류를 알기 위해)
+let ytReady=null, ytPlayer=null, epQueue=[];
+function loadYtApi(){
+  if(ytReady) return ytReady;
+  ytReady=new Promise((ok,fail)=>{
+    if(window.YT&&window.YT.Player) return ok();
+    window.onYouTubeIframeAPIReady=()=>ok();
+    const s=document.createElement("script"); s.src="https://www.youtube.com/iframe_api"; s.onerror=()=>{ ytReady=null; fail(new Error("유튜브 플레이어를 불러오지 못했어요.")); };
+    document.head.appendChild(s);
+  });
+  return ytReady;
+}
+function destroyPlayer(){ if(ytPlayer){ try{ ytPlayer.destroy(); }catch(e){} ytPlayer=null; } cw.player.innerHTML=""; }
+function playMsg(html){ destroyPlayer(); cw.player.innerHTML=`<div class="cwin-msg">${html}</div>`; }
+async function playVideo(n, videoId){
+  destroyPlayer();
+  cw.yt.href=`https://www.youtube.com/watch?v=${videoId}`;
+  cw.player.innerHTML=`<div id="cwinYtp"></div>`;
+  try{ await loadYtApi(); }
+  catch(e){ // API를 못 불러오면 그냥 퍼가기 화면으로
+    cw.player.innerHTML=`<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`; return;
+  }
+  if(curEp!==n) return;
+  ytPlayer=new YT.Player("cwinYtp",{ videoId, playerVars:{autoplay:1,rel:0,playsinline:1}, events:{
+    onStateChange:(e)=>{
+      if(curEp!==n) return;
+      if(e.data===YT.PlayerState.PLAYING) markSeen(n);
+      if(e.data===YT.PlayerState.ENDED && autoNext && n<SHOW.total){ toast(`▶ ${n+1}화를 이어서 틀어드려요`); openEpisode(n+1); }
+    },
+    onError:()=>{ // 퍼가기 막힘·삭제된 영상 → 예비 영상으로
+      if(curEp!==n) return;
+      const nextId=epQueue.shift();
+      if(nextId){ toast("다른 영상으로 바꿔서 틀어볼게요."); playVideo(n,nextId); }
+      else playMsg(`😢 ${n}화는 여기서 재생할 수 없는 영상이에요.<br/>아래 '유튜브에서 보기'로 봐주세요.`);
+    },
+  }});
+}
 async function openEpisode(n){
+  if(n<SHOW.start||n>SHOW.total) return;
   curEp=n; setLastEp(n);
   document.querySelectorAll(".ep-card").forEach((b)=>b.classList.toggle("last",Number(b.dataset.n)===n));
   cw.title.textContent=`🎞️ ${SHOW.title} ${n}화`;
   cw.prev.disabled=n<=SHOW.start; cw.next.disabled=n>=SHOW.total;
-  const search=`https://www.youtube.com/results?search_query=${encodeURIComponent(`${SHOW.title} ${n}회`)}`;
-  cw.yt.href=search;
-  cw.player.innerHTML=`<div class="cwin-msg">📼 ${n}화 테이프를 찾는 중...</div>`;
+  cw.yt.href=`https://www.youtube.com/results?search_query=${encodeURIComponent(`${SHOW.title} ${n}회`)}`;
+  playMsg(`📼 ${n}화 테이프를 찾는 중...`);
   cw.win.classList.remove("hidden");
   try{
     const ep=await api(`/api/classic/episode?n=${n}`);
     if(curEp!==n) return;
-    if(!ep.videoId){ cw.player.innerHTML=`<div class="cwin-msg">😢 ${n}화 영상을 찾지 못했어요.<br/>아래 '유튜브에서 보기'로 찾아보세요.</div>`; return; }
-    cw.title.textContent=`🎞️ ${ep.title}`; cw.yt.href=`https://www.youtube.com/watch?v=${ep.videoId}`;
-    cw.player.innerHTML=`<iframe src="https://www.youtube.com/embed/${ep.videoId}?autoplay=1&rel=0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
-  }catch(e){ if(curEp===n) cw.player.innerHTML=`<div class="cwin-msg">😢 ${e.message}</div>`; }
+    if(!ep.videoId){ playMsg(`😢 ${n}화 영상을 찾지 못했어요.<br/>아래 '유튜브에서 보기'로 찾아보세요.`); return; }
+    cw.title.textContent=`🎞️ ${ep.title}`;
+    epQueue=[...(ep.alts||[])];
+    playVideo(n, ep.videoId);
+    if(n<SHOW.total) api(`/api/classic/episode?n=${n+1}`).catch(()=>{}); // 다음 화 미리 찾아두기
+  }catch(e){ if(curEp===n) playMsg(`😢 ${e.message}`); }
 }
-function closeClassic(){ curEp=0; cw.player.innerHTML=""; cw.win.classList.add("hidden"); if(activeCat==="classic"){ const g=$("#classicGo"); if(g) g.textContent=`▶ ${lastEp()}화 이어보기`; } }
+function closeClassic(){ curEp=0; destroyPlayer(); cw.win.classList.add("hidden"); if(activeCat==="classic"){ const g=$("#classicGo"); if(g&&lastEp()) g.textContent=`▶ ${lastEp()}화 이어보기`; } }
 cw.prev.addEventListener("click",()=>openEpisode(curEp-1));
 cw.next.addEventListener("click",()=>openEpisode(curEp+1));
 cw.close.addEventListener("click",closeClassic);
 cw.win.addEventListener("click",(e)=>{ if(e.target===cw.win) closeClassic(); });
+document.addEventListener("keydown",(e)=>{
+  if(cw.win.classList.contains("hidden")) return;
+  if(e.key==="Escape") closeClassic();
+  else if(e.key==="ArrowRight"&&e.shiftKey&&!cw.next.disabled) openEpisode(curEp+1);
+  else if(e.key==="ArrowLeft"&&e.shiftKey&&!cw.prev.disabled) openEpisode(curEp-1);
+});
 
 (function setToday(){ const el=document.getElementById("todayDate"); if(el) el.textContent="📅 "+new Date().toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"long"})+" 뉴스"; })();
 init();
