@@ -6,7 +6,6 @@ import { fileURLToPath } from "node:url";
 import { initDb, isTurso, addSaved, removeSaved, getSaved } from "./db.js";
 import { getCategories, getNews, searchNews } from "./newsSource.js";
 import { getVideos } from "./videoSource.js";
-import { SHOW, getEpisode } from "./classicSource.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -31,15 +30,6 @@ app.get("/api/news", async (req, res) => {
 app.get("/api/videos", async (req, res) => {
   try { res.json(await getVideos()); }
   catch (e) { res.status(502).json({ error: "영상을 불러오지 못했어요: " + e.message }); }
-});
-
-// 명화관 (순풍산부인과)
-app.get("/api/classic", (req, res) => res.json(SHOW));
-app.get("/api/classic/episode", async (req, res) => {
-  const n = Number(req.query.n);
-  if (!Number.isInteger(n) || n < 1 || n > SHOW.total) return res.status(400).json({ error: "회차 번호가 올바르지 않아요." });
-  try { res.json({ n, ...(await getEpisode(n)) }); }
-  catch (e) { res.status(502).json({ error: "영상을 찾지 못했어요: " + e.message }); }
 });
 
 app.get("/api/search", async (req, res) => {
